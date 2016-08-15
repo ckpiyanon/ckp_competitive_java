@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class Main_Kruskal {
+public class Main {
 	static StreamTokenizer st;
 	static int getInt() throws Exception {st.nextToken(); return (int)st.nval;}
 	public static void main(String args[]) throws Exception {
