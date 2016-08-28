@@ -1,71 +1,65 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.StreamTokenizer;
 
 public class Main {
-	StreamTokenizer st;
-	int getInt() throws Exception {
-		st.nextToken();
-		return (int)st.nval;
-	}
-	void run() throws Exception {
-		
-	}
-	class Tree {
-		public class Node {
-			int l,r,num;
-			Node nL,nR;
-			public Node(int l,int r,int num) {
-				this.l = l;
-				this.r = r;
-				this.num = num;
-				nL = nR = null;
+	static StreamTokenizer st;
+	static int getInt() throws Exception {st.nextToken(); return (int)st.nval;}
+	public static void main(String args[]) throws Exception {
+//		System.setIn(new FileInputStream("in.txt"));
+		st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));
+		Node node;
+		int TC = getInt(),n,l,r,v;
+		while(TC-- > 0) {
+			n = getInt();
+			node = new Node(0,100000,0);
+			overlap = 0;
+			while(n-- > 0) {
+				l = getInt(); r = getInt(); v = getInt();
+				node.replace(l,r,v);
 			}
-			public void split(int point,int num,char flag) {
-				if(flag == 'l') {
-					nL = new Node(l,point,num);
-					l = point + 1;
-				}
-				else if(flag == 'r') {
-					nR = new Node(point,r,num);
-					r = point - 1;
-				}
-			}
-			public boolean isLeaf() {return nL == null && nR == null;}
-			public boolean isFull() {return nL != null && nR != null;}
+			System.out.println(overlap);
 		}
-		public Node root;
-		public int numNode;
-		public Tree(int l,int r) {
-			root = new Node(l,r,0);
-			numNode = 0;
+	}
+	static int overlap;
+	static class Node {
+		private int numLeft,numRight,val;
+		private Node nodeLeft,nodeRight;
+		public Node(int left,int right,int val) {
+			this.numLeft = left;
+			this.numRight = right;
+			this.val = val;
+			nodeLeft = nodeRight = null;
 		}
-		public void split(Node node,int l,int r,int num) throws Exception {
-			if(node.l > l || node.r < r) {
-				throw new Exception("ERROR: out of range");
+		public void replace(int left,int right,int val) {
+			if(nodeLeft == null && nodeRight == null && numLeft == left && numRight == right) {
+				if(val <= this.val)	return;
+				setVal(val);
 			}
-			if(node.isLeaf()) {
-				if(node.l == l && node.r == r)
-					node.num = num;
-				else if(node.l == l && node.r > r)
-					node.split(r, num, 'l');
-				else if(node.l > l && node.r == r)
-					node.split(l, num, 'r');
-				else {
-					node.split(l, num, 'r');
-					node.nR.split(r, num, 'l');
+			else if(nodeLeft == null && nodeRight == null) {
+				if(numLeft < left) {
+					split(left);
+					nodeRight.replace(left,right,val);
 				}
-				return;
-			}
-			if(node.isFull()) {
-				Node nL = node.nL,nR = node.nR;
-				if(nL.l <= l && r <= nL.r)
-					split(nL,l,r,num);
-				else if(nR.l <= l && nR.r <= r)
-					split(nR,l,r,num);
-				else if(nR.l <= r) {
-					split(nL,l,nL.r,num);
-					split(nR,nR.l,r,num);
+				else if(numRight > right) {
+					split(right);
+					nodeLeft.replace(left,right,val);
 				}
 			}
+			else {
+				if(nodeLeft.numRight > left)
+					nodeLeft.replace(left,Math.min(nodeLeft.numRight,right),val);
+				if(nodeRight.numLeft < right)
+					nodeRight.replace(Math.max(nodeRight.numLeft,left),right,val);
+			}
+		}
+		public void setVal(int val) {
+			this.val = val;
+			overlap += numRight - numLeft;
+		}
+		public void split(int mid) {
+			nodeLeft = new Node(numLeft,mid,val);
+			nodeRight = new Node(mid,numRight,val);
 		}
 	}
 }
