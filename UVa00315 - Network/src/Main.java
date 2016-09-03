@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.StringTokenizer;
 
@@ -23,12 +22,14 @@ public class Main {
 					graph.get(u).add(v);	graph.get(v).add(u);
 				}
 			}
-			Arrays.fill(numChildren,0);
 			rank = 0;
 			visited.clear();
 			isCut.clear();
 			for(int i = 0;i < N;i++)	parent[i] = i;
-			for(int i = 0;i < N;i++)	if(!visited.get(i)) {root = i;	dfs(i);}
+			for(int i = 0;i < N;i++)	if(!visited.get(i)) {
+				root = i;	numChildren = 0;
+				dfs(i);
+			}
 			System.out.println(isCut.cardinality());
 		}
 	}
@@ -37,7 +38,7 @@ public class Main {
 		num[u] = low[u] = rank++;
 		for(Integer v:graph.get(u)) {
 			if(!visited.get(v)) {
-				if(u == root)	numChildren[u]++;
+				if(u == root)	numChildren++;
 				parent[v] = u;
 				dfs(v);
 				low[u] = Math.min(low[u],low[v]);
@@ -45,11 +46,11 @@ public class Main {
 			}
 			else if(parent[u] != v)	low[u] = Math.min(low[u],num[v]);
 		}
-		if(numChildren[u] > 1 && u == root)	isCut.set(u);
+		if(numChildren > 1 && u == root)	isCut.set(u);
 	}
 	static BitSet visited = new BitSet(100);
 	static BitSet isCut = new BitSet(100);
-	static int root,parent[] = new int[100],numChildren[] = new int[100];
+	static int root,parent[] = new int[100],numChildren;
 	static int low[] = new int[100],num[] = new int[100],rank;
 	static ArrayList<ArrayList<Integer>> graph = new ArrayList<ArrayList<Integer>>(100);
 }
