@@ -1,7 +1,5 @@
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.io.StreamTokenizer;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -30,8 +28,8 @@ public class Main {
 		return true;
 	}
 	public static void main(String args[]) throws Exception {
-		try{System.setIn(new FileInputStream("in.txt"));}catch(Exception e){}
-		try{System.setOut(new PrintStream("out.txt"));}catch(Exception e){}
+//		try{System.setIn(new FileInputStream("in.txt"));}catch(Exception e){}
+//		try{System.setOut(new PrintStream("out.txt"));}catch(Exception e){}
 		st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));
 		colour = new boolean[200];
 		graph = new ArrayList<ArrayList<Integer>>();
@@ -53,8 +51,7 @@ public class Main {
 			for(int i = 0;i < V && ans >= 0;i++) {
 				if(visited.get(i))	continue;
 				int[] num = {0,0};
-				if(bipartiteCheck(i,false,num))
-					ans += Math.max(num[0],num[1]);
+				if(bipartiteCheck(i,false,num))	ans += Math.max(1,Math.min(num[0],num[1]));
 				else ans = -1;
 			}
 			System.out.println(ans);
