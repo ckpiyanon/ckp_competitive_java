@@ -17,8 +17,7 @@ public class Main {
 		stack.push(start);
 		while(!stack.isEmpty()) {
 			tmp = stack.pop().intValue();
-			if(v[tmp] > 1)
-				continue;
+			if(v[tmp] > 1)	continue;
 			ans++;
 			v[tmp] = 2;
 			for(int i = 0;i < 26;i++)
