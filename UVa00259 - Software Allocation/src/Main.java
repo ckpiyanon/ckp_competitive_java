@@ -3,66 +3,67 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.StringTokenizer;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Main {
-	static int task(char ch) {return ch - 'A' + 12;}
-	static int comp(int n) {return n + 2;}
+	static int node(char c) {
+		if(Character.isDigit(c))	return c - '0';
+		return c - 'A' + 10;
+	}
 	public static void main(String args[]) throws Exception {
-		System.setIn(new FileInputStream("in.txt"));
+		try {System.setIn(new FileInputStream("in.txt"));} catch(Exception e) {}
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		String ins,s1,s2;
-		int numTask,n,t;
-		while(true) {
-			numTask = 0;
+		String s;
+		while(in.ready()) {
 			for(int[] each:graph)	Arrays.fill(each,0);
-			for(int i = comp(0);i < comp(10);i++)	graph[i][1] = 1;
-//			for(int i = task('A');i <= task('Z');i++)	graph[0][i] = 1;
-			while((ins = in.readLine()) != null && ins.length() > 0) {
-				st = new StringTokenizer(ins);
-				s1 = st.nextToken(); s2 = st.nextToken();
-				t = task(s1.charAt(0));	numTask += n = s1.charAt(1) - '0';
-				graph[0][t] += n;
-				for(int i = 0;i < s2.length() - 1;i++) {
-					graph[t][comp(s2.charAt(i) - '0')] = 1;
-				}
+			while((s = in.readLine()) != null && s.length() > 0) {
+				int task = node(s.charAt(0)),num = s.charAt(1) - '0';
+				graph[SRC][task] += num;
+				for(int i = 3;s.charAt(i) != ';';graph[task][node(s.charAt(i++))]++);
 			}
-			if(maxflow(0,1) < numTask)	System.out.println("!");
+			for(char ch = '0';ch <= '9';graph[node(ch++)][TAR] = 1);
+			if(maxflow() > 0)	System.out.println("!");
 			else {
-				for(int i = comp(0);i < comp(10);i++)
-					System.out.print(getTask(i));
+				for(int i = 0;i < 10;i++) {
+					boolean found = false;
+					for(char ch = 'A';ch <= 'Z' && !found;ch++) if(graph[i][node(ch)] > 0) {
+						System.out.print(ch); found = true;
+					}
+					if(!found)	System.out.print("_");
+				}
 				System.out.println();
 			}
-			if(ins == null)	break;
 		}
 	}
-	static char getTask(int comp) {
-		for(char i = 'A';i <= 'Z';i++) {
-			if(graph[comp][task(i)] > 0)	return i;
+	static int maxflow() {
+		int u,w,x = 0;
+		for(char ch = 'A';ch <= 'Z';x += graph[SRC][node(ch++)]);
+		while(bfs()) {
+			w = Integer.MAX_VALUE;
+			for(u = TAR;u != SRC;u = parent[u])	w = Math.min(w,graph[parent[u]][u]);
+			for(u = TAR;u != SRC;u = parent[u]) {
+				graph[parent[u]][u] -= w;	graph[u][parent[u]] += w;
+			}
+			x--;
 		}
-		return '_';
+		return x;
 	}
-	
-	static int graph[][] = new int[38][38];
-	static BitSet visited = new BitSet(38);
-	static int maxflow(int s,int t) {
-		int f,ans = 0;
-		visited.clear();
-		while((f = dfs(s,t,Integer.MAX_VALUE)) != 0) {
-			ans += f;
-			visited.clear();
+	static boolean bfs() {
+		Queue<Integer> q = new LinkedList<Integer>();
+		visited.clear(); visited.set(SRC); q.add(SRC);
+		while(!q.isEmpty()) {
+			int u = q.poll();
+			if(u == TAR)	return true;
+			for(int v = 0;v < V;v++) if(graph[u][v] > 0 && !visited.get(v)) {
+				parent[v] = u;
+				visited.set(v);
+				q.add(v);
+			}
 		}
-		return ans;
+		return false;
 	}
-	static int dfs(int s,int t,int flow) {
-		visited.set(s);
-		if(s == t)	return flow;
-		int f;
-		for(int i = 0;i < 38;i++) if(!visited.get(i) && graph[s][i] > 0 && (f = dfs(i,s,Math.min(flow,graph[s][i]))) != 0) {
-			graph[s][i] -= f;	graph[i][s] += f;
-			return f;
-		}
-		return 0;
-	}
+	static final int V = 38,SRC = 36,TAR = 37;
+	static int graph[][] = new int[V][V],parent[] = new int[V];
+	static BitSet visited = new BitSet(V);
 }
