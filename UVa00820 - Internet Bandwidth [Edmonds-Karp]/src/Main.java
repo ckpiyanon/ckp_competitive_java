@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.StreamTokenizer;
 import java.util.Arrays;
@@ -10,7 +11,7 @@ public class Main {
 	static StreamTokenizer st;
 	static int getInt() throws Exception {st.nextToken(); return (int)st.nval;}
 	public static void main(String args[]) throws Exception {
-//		System.setIn(new FileInputStream("in.txt"));
+		try {System.setIn(new FileInputStream("in.txt"));} catch(Exception e) {}
 		st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));
 		int s,t,c,u,v,w,TC = 0;
 		while((n = getInt()) != 0) {
