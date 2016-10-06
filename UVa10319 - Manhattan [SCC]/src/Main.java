@@ -36,7 +36,6 @@ public class Main {
 					add(a1,dirA^1,s1,dirS);	add(a1,dirA^1,a2,dirA);
 				}
 			}
-			uf = new UnionFind(n);
 			stack.clear();
 			visited.clear();
 			Arrays.fill(num,-1);
@@ -45,12 +44,12 @@ public class Main {
 			for(int i = 0;i < n;i++)	if(num[i] == -1)	dfs(i);
 			boolean yes = true;
 			for(int i = 0;i < n && yes;i += 2)
-				if(uf.isSameSet(i,i^1))
+				if(roots[i] == roots[i^1])
 					yes = false;
 			System.out.println(yes ? "Yes":"No");
 		}
 	}
-	static int[] num = new int[MAXN],low = new int[MAXN];
+	static int[] num = new int[MAXN],low = new int[MAXN],roots = new int[MAXN];
 	static Stack<Integer> stack = new Stack<Integer>();
 	static BitSet visited = new BitSet(1000);
 	static int scc;
@@ -65,7 +64,7 @@ public class Main {
 		if(low[u] == num[u]) {
 			while(!stack.isEmpty()) {
 				int v = stack.pop();
-				uf.merge(u,v);
+				roots[v] = u;
 				visited.set(v,false);
 				if(u == v)	break;
 			}
@@ -73,33 +72,4 @@ public class Main {
 	}
 	static void add(int from,int f,int to,int t) {graph.get(from*2 + f).add(to*2 + t);}
 	static ArrayList<ArrayList<Integer>> graph = new ArrayList<ArrayList<Integer>>(MAXN);
-	static UnionFind uf;
-	static class UnionFind {
-		private int[] parent,rank;
-		private int size;
-		public UnionFind(int size) {
-			this.size = size;
-			parent = new int[size];
-			rank = new int[size];
-			for(int i = 0;i < size;i++) {parent[i] = i;	rank[i] = 0;}
-		}
-		public int find(int a) {
-			if(a == parent[a])	return a;
-			return parent[a] = find(parent[a]);
-		}
-		public void merge(int a,int b) {
-			a = find(a); b = find(b);
-			if(a == b)	return;
-			if(rank[a] == rank[b]) {
-				parent[a] = b;
-				rank[b]++;
-			}
-			else if(rank[a] > rank[b])
-				parent[b] = a;
-			else
-				parent[a] = b;
-		}
-		public boolean isSameSet(int a,int b) {return find(a) == find(b);}
-		public int size() {return size;}
-	}
 }

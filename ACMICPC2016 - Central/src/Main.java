@@ -3,7 +3,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
 public class Main {
-	private static final String prob = "D";
+	private static final String prob = "K";
 	public static void main(String args[]) throws Exception {
 		BufferedReader in1 = new BufferedReader(new InputStreamReader(new FileInputStream("out" + prob + ".txt")));
 		BufferedReader in2 = new BufferedReader(new InputStreamReader(new FileInputStream("ans" + prob + ".txt")));
