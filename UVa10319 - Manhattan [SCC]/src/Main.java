@@ -10,7 +10,6 @@ import java.util.Stack;
 public class Main {
 	static StreamTokenizer st;
 	static int getInt() throws Exception {st.nextToken(); return (int)st.nval;}
-	static final int MAXN = 120;
 	public static void main(String args[]) throws Exception {
 		try {System.setIn(new FileInputStream("in.txt"));} catch(Exception e) {}
 		st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));
@@ -19,7 +18,7 @@ public class Main {
 			int nS = getInt(),nA = getInt(),m = getInt();
 			Sat sat = new Sat(nS + nA);
 			while(m-- > 0) {
-				int s1 = getInt() - 1,a1 = getInt() + nS - 1,s2 = getInt() - 1,a2 = getInt() + nS - 1;
+				int s1 = getInt(),a1 = getInt() + nS,s2 = getInt(),a2 = getInt() + nS;
 				int distS = s1 - s2,distA = a1 - a2;
 				if(distS == 0 && distA == 0)	continue;
 				boolean dirS = distA > 0,dirA = distS > 0;
