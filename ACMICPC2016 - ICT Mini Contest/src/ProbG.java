@@ -28,8 +28,8 @@ public class ProbG {
 		private ArrayList<ArrayList<Integer>> graph;
 		private Stack<Integer> stack;
 		private BitSet visited;
-		private int[] num,low,head;
-		private int size,numscc;
+		private int[] num,low;
+		private int size,sccCount;
 
 		public Sat(int sz) {
 			size = sz * 2;
@@ -47,17 +47,17 @@ public class ProbG {
 
 		public boolean solve() {
 			stack = new Stack<Integer>(); visited = new BitSet(size);
-			head = new int[size]; num = new int[size]; low = new int[size];
-			Arrays.fill(num,-1); Arrays.fill(low,-1); Arrays.fill(head,-1);
+			num = new int[size]; low = new int[size];
+			Arrays.fill(num,-1); Arrays.fill(low,-1);
 			for(int i = 0;i < size;i++) if(num[i] == -1)
 				dfs(i);
 			for(int i = 0;i < size;i += 2)
-				if(head[i] != -1 && head[i^1] != -1 && head[i] == head[i^1])
+				if(low[i] != -1 && low[i^1] != -1 && low[i] == low[i^1])
 					return false;
 			return true;
 		}
 		private void dfs(int u) {
-			low[u] = num[u] = numscc++;
+			low[u] = num[u] = sccCount++;
 			visited.set(u); stack.push(u);
 			for(Integer v:graph.get(u)) {
 				if(num[v] == -1)	dfs(v);
@@ -66,7 +66,6 @@ public class ProbG {
 			if(low[u] == num[u]) {
 				while(!stack.isEmpty()) {
 					int v = stack.pop();
-					head[v] = u;
 					visited.set(v,false);
 					if(u == v)	break;
 				}

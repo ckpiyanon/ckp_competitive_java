@@ -38,7 +38,7 @@ public class Main {
 		private ArrayList<ArrayList<Integer>> graph;
 		private Stack<Integer> stack;
 		private BitSet visited;
-		private int[] num,low,head;
+		private int[] num,low;
 		private int size,numscc;
 		public Sat(int sz) {
 			size = sz * 2;
@@ -55,11 +55,11 @@ public class Main {
 		private int btoi(boolean b) {return b ? 1:0;}
 		public boolean solve() {
 			stack = new Stack<Integer>(); visited = new BitSet(size);
-			head = new int[size]; num = new int[size]; low = new int[size];
-			Arrays.fill(num,-1); Arrays.fill(low,-1); Arrays.fill(head,-1);
+			num = new int[size]; low = new int[size];
+			Arrays.fill(num,-1); Arrays.fill(low,-1);
 			for(int i = 0;i < size;i++) if(num[i] == -1) dfs(i);
 			for(int i = 0;i < size;i += 2)
-				if(head[i] != -1 && head[i^1] != -1 && head[i] == head[i^1])
+				if(low[i] != -1 && low[i^1] != -1 && low[i] == low[i^1])
 					return false;
 			return true;
 		}
@@ -73,7 +73,6 @@ public class Main {
 			if(low[u] == num[u]) {
 				while(!stack.isEmpty()) {
 					int v = stack.pop();
-					head[v] = u;
 					visited.set(v,false);
 					if(u == v)	break;
 				}
