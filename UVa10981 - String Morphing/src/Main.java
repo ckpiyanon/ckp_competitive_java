@@ -3,9 +3,7 @@ import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 import java.util.TreeMap;
 
 public class Main {
@@ -15,29 +13,36 @@ public class Main {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String s,t;
 		int TC = Integer.parseInt(in.readLine());
-		boolean first = true;
 		out = new BufferedWriter(new OutputStreamWriter(System.out));
 		while(TC-- > 0) {
-			if(!first)	out.write("\n");
-			first = false;
+			parent.clear();
 			s = in.readLine(); t = in.readLine();
-			dfs(s,t); trace(t);
+			if(dfs(s,t))	trace(t);
+			else	out.write("None exist!\n");
+			if(TC > 0)	out.write("\n");
 		}
 		out.flush();
 	}
 	static Map<String,String> parent = new TreeMap<String,String>();
-	static Map<String,Boolean> visited = new TreeMap<String,Boolean>();
 	static void trace(String t) throws Exception {
 		if(t == null)	return;
 		trace(parent.get(t));
 		out.write(t); out.write("\n");
 	}
-	static void dfs(String s,String t) {
+	static boolean dfs(String s,String t) throws Exception {
+		if(s.length() == t.length())	return s.equals(t);
+		for(int i = 1;i < s.length();i++) {
+			String u = morph(s,i-1);
+			if(parent.containsKey(u))	continue;
+			parent.put(u,s);
+			if(dfs(u,t))	return true;
+		}
+		return false;
 	}
 	static String morph(String s,int p) {
-		StringBuilder sb = new StringBuilder(s);
-		sb.setCharAt(p,map[s.charAt(p) - 'a'][s.charAt(p+1) - 'a']);
-		return sb.deleteCharAt(p+1).toString();
+		StringBuilder sb = new StringBuilder(s.substring(0,p));
+		sb.append(map[s.charAt(p) - 'a'][s.charAt(p+1) - 'a']);
+		return sb.append(s.substring(p+2)).toString();
 	}
-	static char[][] map = {{'b','b','a'},{'c','b','a'},{'a','c','c'}};
+	static final char[][] map = {{'b','b','a'},{'c','b','a'},{'a','c','c'}};
 }
