@@ -19,13 +19,8 @@ public class Main {
 		out.flush();
 	}
 	static int findMax(int a,int b) {
-		if(a > b) {
-			a ^= b;
-			b ^= a;
-			a ^= b;
-		}
 		int max = 0;
-		for(int i = a;i <= b;i++)	max = Math.max(max,play(i));
+		for(int i = Math.min(a,b);i <= Math.max(a,b);i++)	max = Math.max(max,play(i));
 		return max;
 	}
 	static int play(int n) {
