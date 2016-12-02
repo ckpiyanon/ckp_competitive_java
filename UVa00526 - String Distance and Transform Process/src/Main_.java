@@ -1,10 +1,12 @@
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
 public class Main_ {
 	static int cnt,insert,delete,arr[][];
 	static char s1[],s2[];
 	public static void main(String args[]) throws Exception {
+		try {System.setIn(new FileInputStream("in.txt"));} catch(Exception e) {}
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		int l1,l2,TC = Integer.parseInt(in.readLine());
 		arr = new int[2001][2001];
