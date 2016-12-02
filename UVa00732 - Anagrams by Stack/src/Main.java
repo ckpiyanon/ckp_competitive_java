@@ -10,8 +10,7 @@ public class Main {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		out = new BufferedWriter(new OutputStreamWriter(System.out));
 		while(in.ready()) {
-			do {s1 = in.readLine().toCharArray();} while(s1.length == 0);
-			do {s2 = in.readLine().toCharArray();} while(s2.length == 0);
+			s1 = in.readLine().toCharArray(); s2 = in.readLine().toCharArray();
 			idx = 0;
 			out.write("[\n");
 			if(s1.length == s2.length)	run(0,0,"");
