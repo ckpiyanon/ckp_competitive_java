@@ -37,7 +37,7 @@ public class Main {
 			case "SHELVE": {
 				while(!pq.isEmpty()) {
 					Book b = pq.poll();
-					int i = Collections.binarySearch(list,b) - 1;
+					int i = map.get(b.name) - 1;
 					borrowed.set(i+1,false);
 					while(i >= 0 && borrowed.get(i))	i--;
 					out.write("Put " + b.name);
