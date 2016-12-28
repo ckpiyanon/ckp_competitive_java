@@ -11,18 +11,17 @@ public class Main {
 		try {System.setIn(new FileInputStream("in.txt"));} catch(Exception e) {}
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(System.out));
-		StringTokenizer st;
-		String ans;
-		int TC = Integer.parseInt(in.readLine()),i;
+		StringTokenizer st; String s;
+		int TC = Integer.parseInt(in.readLine()),i,j;
 		while(TC-- > 0) {
 			st = new StringTokenizer(in.readLine());
-			st = new StringTokenizer(new BigDecimal(st.nextToken()).add(new BigDecimal(st.nextToken())).toPlainString(),".");
-			ans = st.nextToken(); i = 0;
-			while(ans.charAt(i) == '0' && i < ans.length() - 1)	i++;
-			out.write(ans.substring(i) + ".");
-			ans = st.nextToken(); i = ans.length();
-			while(i > 1 && ans.charAt(i-1) == '0')	i--;
-			out.write(ans.substring(0,i) + "\n");
+			s = new BigDecimal(st.nextToken()).add(new BigDecimal(st.nextToken())).toPlainString();
+			i = 0; j = s.length();
+			while(s.charAt(i) == '0')	i++;
+			if(s.charAt(i) == '.')		i--;
+			while(s.charAt(j-1) == '0')	j--;
+			if(s.charAt(j-1) == '.')	j++;
+			out.write(s.substring(i,j) + "\n");
 		}
 		out.flush();
 	}
