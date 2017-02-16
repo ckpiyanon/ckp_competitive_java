@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.StreamTokenizer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +13,7 @@ public class Main {
 	public static void main(String args[]) throws Exception {
 //		System.setIn(new FileInputStream("in.txt"));
 		st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));
+		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(System.out));
 		ArrayList<Edge> graph = new ArrayList<Edge>();
 		int r,u,v,TC = 0;
 		while(getInt() != 0 && (r = getInt()) != 0) {
@@ -21,12 +24,12 @@ public class Main {
 			for(Edge e:graph) {
 				if(!connected(e.u,e.v))	merge(e.u,e.v);
 				if(connected(u,v)) {
-					System.out.println("Scenario #" + ++TC + "\nMinimum Number of Trips = " + (int)Math.ceil((double)(r) / e.w));
-					System.out.println();
+					out.write("Scenario #" + ++TC + "\nMinimum Number of Trips = " + (int)Math.ceil((double)(r) / e.w) + "\n\n");
 					break;
 				}
 			}
 		}
+		out.flush();
 	}
 	
 	static class Edge implements Comparable<Edge> {
