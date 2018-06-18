@@ -1,6 +1,5 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StreamTokenizer;
@@ -9,63 +8,72 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Main {
+	// UVa10369 - Arctic Network
 	static StreamTokenizer st;
 	static int getInt() throws Exception {st.nextToken(); return (int)st.nval;}
 	public static void main(String args[]) throws Exception {
-		try {System.setIn(new FileInputStream("in.txt"));} catch(Exception e) {}
-		st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));
+//		try {System.setIn(new FileInputStream("in.txt"));} catch(Exception e) {}
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		st = new StreamTokenizer(in);
 		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(System.out));
-		ArrayList<Point> list = new ArrayList<Point>(500);
-		ArrayList<Edge> edges = new ArrayList<Edge>(125250);
 		DecimalFormat df = new DecimalFormat("0.00");
-		UnionFind uf;
-		int TC = getInt(),s,p;
-		double d;
+		Point[] points = new Point[500];
+		ArrayList<Edge> edges = new ArrayList<Edge>();
+		int TC = getInt();
 		while(TC-- > 0) {
-			s = getInt(); p = getInt(); list.clear(); edges.clear();
-			while(p-- > 0)	list.add(new Point(getInt(),getInt()));
-			for(int i = 0;i < list.size();i++) for(int j = i + 1;j < list.size();j++)
-				edges.add(new Edge(i,j,list.get(i).distance(list.get(j))));
-			Collections.sort(edges); uf = new UnionFind(list.size()); d = 0.0;
-			for(Edge e:edges) if(uf.find(e.u) != uf.find(e.v)) {
-				uf.merge(e.u,e.v);
-				d = e.w;
+			int s = getInt(),p = getInt();
+			for(int i = 0;i < p;i++)
+				points[i] = new Point(getInt(),getInt());
+			clear();
+			edges.clear();
+			numSet = p;
+			for(int i = 0;i < p;i++) for(int j = i + 1;j < p;j++)
+				edges.add(new Edge(i,j,points[i].distanceTo(points[j])));
+			Collections.sort(edges);
+			double maxDist = 0.0;
+			for(Edge e:edges) {
+				if(numSet == s)	break;
+				if(find(e.u) != find(e.v)) {
+					maxDist = e.dis;
+					merge(e.u,e.v);
+				}
 			}
-			out.write(df.format(d) + "\n");
+			out.write(df.format(maxDist) + "\n");
 		}
 		out.flush();
-	}
-	static class Edge implements Comparable<Edge> {
-		int u,v;
-		double w;
-		Edge(int uu,int vv,double ww) {u = uu; v = vv; w = ww;}
-		public int compareTo(Edge e) {return Double.compare(w,e.w);}
+		in.close();
+		out.close();
 	}
 	static class Point {
 		double x,y;
-		Point(double xx,double yy) {x = xx; y = yy;}
-		double distance(Point p) {return Math.sqrt(Math.pow(x - p.x,2) + Math.pow(y - p.y,2));}
+		Point(double x,double y) {this.x = x; this.y = y;}
+		double distanceTo(Point p) {
+			return Math.sqrt(Math.pow(x - p.x,2) + Math.pow(y - p.y,2));
+		}
 	}
-	static class UnionFind {
-		int[] parent,rank;
-		int size;
-		UnionFind(int sz) {
-			parent = new int[sz];
-			rank = new int[sz];
-			size = sz;
-			for(int i = 0;i < sz;i++) {parent[i] = i; rank[i] = 0;}
-		}
-		int find(int n) {return parent[n] = n == parent[n] ? n:find(parent[n]);}
-		void merge(int a,int b) {
-			a = find(a); b = find(b);
-			if(a == b)	return;
-			if(rank[a] == rank[b]) {
-				parent[a] = b;
-				rank[b]++;
-			}
-			else if(rank[a] > rank[b])	parent[b] = a;
-			else	parent[a] = b;
-			size--;
-		}
+	static class Edge implements Comparable<Edge> {
+		int u,v;
+		double dis;
+		Edge(int u,int v,double dis) {this.u = u; this.v = v; this.dis = dis;}
+		public int compareTo(Edge e) {return Double.compare(this.dis,e.dis);}
+	}
+	static int numSet;
+	static int[] parent = new int[500];
+	static int[] level = new int[500];
+	static void clear() {
+		for(int i = 0;i < 500;i++) {parent[i] = i; level[i] = 0;}
+	}
+	static int find(int p) {
+		if(parent[p] == p)	return p;
+		return parent[p] = find(parent[p]);
+	}
+	static void merge(int a,int b) {
+		a = find(a);
+		b = find(b);
+		if(a == b)	return;
+		numSet--;
+		if(level[a] == level[b]) {parent[b] = a; level[a]++;}
+		else if(level[a] > level[b])	parent[b] = a;
+		else	parent[a] = b;
 	}
 }
